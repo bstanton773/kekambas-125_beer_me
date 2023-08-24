@@ -18,6 +18,10 @@ function pageLoader(){
         link.addEventListener('click', changeView);
     }
 
+    // Add the brew finder when the form submits
+    const findBrewsForm = document.querySelector('#find-brews-form');
+    findBrewsForm.addEventListener('submit', findBreweries);
+
 }
 
 // Create a function that will change the background color
@@ -45,4 +49,20 @@ function changeView(event){
     let idToTurnOn = event.target.name;
     const toTurnOn = document.getElementById(idToTurnOn);
     toTurnOn.classList.replace('is-invisible', 'is-visible');
+}
+
+
+function findBreweries(event){
+    event.preventDefault();
+    // console.dir(event.target.city);
+    const cityName = event.target.city.value;
+    console.log(`Looking for breweries in ${cityName}...`);
+    const url = `https://api.openbrewerydb.org/v1/breweries?by_city=${cityName}&per_page=10&page=1`;
+    // Set the input box back to empty
+    event.target.city.value = '';
+
+    fetch(url)
+        .then(response => response.json())
+        .then(data => console.log(data))
+        .catch(err => console.error(err))
 }
