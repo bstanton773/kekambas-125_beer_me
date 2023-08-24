@@ -59,3 +59,39 @@ console.log(middleBubble);
 // return a NodeList (Array-like) of elements that match the specified 'selector'
 let navDivs = document.querySelectorAll('nav div'); // Combinator Selector - Descendant
 console.log(navDivs);
+
+
+
+// Create elements with the document
+
+// document.createElement('tagName')
+// Creates a new element with the given tag name
+let newHeader = document.createElement('h3');
+newHeader.innerHTML = 'Header Created by JavaScript';
+newHeader.className = 'text-center text-danger';
+console.log(newHeader);
+
+
+// Add element to the HTML document
+
+let heroText = document.getElementsByClassName('hero-text')[0];
+
+// Element.append(elementToAdd)
+// Append the elementToAdd as the LAST CHILD of Element
+
+// heroText.append(newHeader);
+
+
+// Element.prepend(elementToAdd)
+// Prepend the elementToAdd as the FIRST CHILD of Element
+// heroText.prepend(newHeader);
+
+
+// Element.after(elementToAdd)
+// Add the elementToAdd AFTER (as a sibing) the Element
+// heroText.after(newHeader);
+
+
+// Element.before(elementToAdd)
+// Add the elementToAdd BEFORE (as a sibling) the Element
+heroText.before(newHeader);
