@@ -20,7 +20,7 @@ function pageLoader(){
 
     // Add the brew finder when the form submits
     const findBrewsForm = document.querySelector('#find-brews-form');
-    findBrewsForm.addEventListener('submit', findBreweries);
+    findBrewsForm.addEventListener('submit', (e) => findBreweries(e, 1));
 
 }
 
@@ -52,28 +52,31 @@ function changeView(event){
 }
 
 
-function findBreweries(event){
+function findBreweries(event, pageNumber){
     event.preventDefault();
     // console.dir(event.target.city);
-    const cityName = event.target.city.value;
+    const cityName = document.getElementsByName('city')[0].value;
     console.log(`Looking for breweries in ${cityName}...`);
-    const url = `https://api.openbrewerydb.org/v1/breweries?by_city=${cityName}&per_page=10&page=1`;
-    // Set the input box back to empty
-    event.target.city.value = '';
+    const url = `https://api.openbrewerydb.org/v1/breweries?by_city=${cityName}&per_page=10&page=${pageNumber}`;
 
     fetch(url)
         .then(response => response.json())
-        .then(data => displayBreweries(data))
+        .then(data => displayBreweries(data, pageNumber))
         .catch(err => console.error(err))
 }
 
 
 // Callback Function for findBreweries that will insert breweries into table
-function displayBreweries(data){
+function displayBreweries(data, pageNumber){
+    data.sort( (a, b) => {
+        if (a.city > b.city){return 1}
+        else if (a.city < b.city){ return -1}
+        else { return 0}
+    })
     let table = document.getElementById('brewery-table');
 
     // TODO: Clear out the table of any current data
-    table.innerHTML = '';
+    clearTable(table);
 
     // Create the brewery table headers
     const thead = document.createElement('thead');
@@ -104,6 +107,24 @@ function displayBreweries(data){
         newDataCell(tr, brewery.city);
         newDataCell(tr, brewery.state);
     }
+
+    // Add a next button if there is data
+    if (data.length >= 0 && data.length == 10){
+        let nextButton = document.createElement('button');
+        nextButton.classList.add('prev-next-btn', 'btn', 'btn-primary');
+        nextButton.innerText = 'Next';
+        nextButton.addEventListener('click', e => findBreweries(e, pageNumber + 1));
+        table.after(nextButton);
+    }
+
+    // Add a previous button for all pages past page 1
+    if (pageNumber > 1){
+        let prevButton = document.createElement('button');
+        prevButton.classList.add('prev-next-btn', 'btn', 'btn-danger');
+        prevButton.innerText = 'Prev';
+        prevButton.addEventListener('click', e => findBreweries(e, pageNumber - 1))
+        table.after(prevButton);
+    }
 }
 
 
@@ -112,4 +133,13 @@ function newDataCell(tr, value){
     let td = document.createElement('td');
     td.innerText = value ?? '-';
     tr.append(td);
+}
+
+// Helper function to clear the brewery table
+function clearTable(table){
+    table.innerHTML = '';
+    const buttonsToClear = document.querySelectorAll('.prev-next-btn');
+    for (let btn of buttonsToClear){
+        btn.remove()
+    }
 }
