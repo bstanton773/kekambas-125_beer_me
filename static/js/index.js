@@ -63,6 +63,53 @@ function findBreweries(event){
 
     fetch(url)
         .then(response => response.json())
-        .then(data => console.log(data))
+        .then(data => displayBreweries(data))
         .catch(err => console.error(err))
+}
+
+
+// Callback Function for findBreweries that will insert breweries into table
+function displayBreweries(data){
+    let table = document.getElementById('brewery-table');
+
+    // TODO: Clear out the table of any current data
+    table.innerHTML = '';
+
+    // Create the brewery table headers
+    const thead = document.createElement('thead');
+    table.append(thead);
+    let tr = document.createElement('tr');
+    thead.append(tr);
+    const tableHeadings = ['Name', 'Type', 'Street Address', 'Address 2', 'Address 3', 'City', 'State'];
+    for (let heading of tableHeadings){
+        let th = document.createElement('th');
+        th.scope = 'col';
+        th.innerText = heading;
+        tr.append(th);
+    }
+
+    // write a row for each brewery in data
+    for (let brewery of data){
+        let tr = document.createElement('tr');
+        table.append(tr);
+
+        const td = document.createElement('td');
+        td.innerHTML = `<a href=${brewery.website_url} target="_blank">${brewery.name}</a>`
+        tr.append(td);
+
+        newDataCell(tr, brewery.brewery_type);
+        newDataCell(tr, brewery.street);
+        newDataCell(tr, brewery.address_2);
+        newDataCell(tr, brewery.address_3);
+        newDataCell(tr, brewery.city);
+        newDataCell(tr, brewery.state);
+    }
+}
+
+
+// Helper function to create a new data cell for table
+function newDataCell(tr, value){
+    let td = document.createElement('td');
+    td.innerText = value ?? '-';
+    tr.append(td);
 }
