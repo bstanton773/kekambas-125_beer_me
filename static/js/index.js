@@ -29,6 +29,15 @@ function pageLoader(){
     const draggable = document.getElementById('draggable');
     draggable.addEventListener('dragstart', drag);
 
+    // Add click listeners to the Bubbles to show how events propogate
+    const bubbles = document.getElementsByClassName('bubble');
+    bubbles[0].addEventListener('click', event => console.log("You clicked outer ... propogated from:", event.target.id));
+    bubbles[1].addEventListener('click', event => {
+        console.log("You clicked middle ... propogated from:", event.target.id);
+        // event.stopPropagation(); // Will stop the event from also calling the outer event
+    });
+    bubbles[2].addEventListener('click', event => console.log("You clicked inner ... propogated from:", event.target.id));
+
 }
 
 // Create a function that will change the background color
