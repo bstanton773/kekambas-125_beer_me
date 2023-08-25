@@ -59,6 +59,13 @@ function changeView(event){
     const toTurnOn = document.getElementById(idToTurnOn);
     toTurnOn.classList.replace('is-invisible', 'is-visible');
     event.target.classList.add('active');
+
+    // Toggle beer movement
+    if (idToTurnOn === 'grab'){
+        startBeerMove();
+    } else {
+        endBeerMove();
+    }
 }
 
 
@@ -173,4 +180,47 @@ function drop(e){
     console.log(beerId);
     const draggable = document.getElementById(beerId);
     e.target.append(draggable);
+}
+
+
+// Move the glass with key strokes by changing it's absolute position
+function handleBeerMove(event){
+    console.log(event.key);
+    const arrowKeys = ['ArrowUp', 'ArrowRight', 'ArrowDown', 'ArrowLeft'];
+    // If the user presses one of the arrow keys
+    if (arrowKeys.includes(event.key)){
+        // Move the beer glass 5px in that direction
+        const glass = document.querySelector('.beerglass');
+        switch(event.key){
+            case 'ArrowUp':
+                glass.style.top = parseInt(glass.style.top.substring(0, glass.style.top.length-2)) - 5 + 'px';
+                break;
+            case 'ArrowDown':
+                glass.style.top = parseInt(glass.style.top.substring(0, glass.style.top.length-2)) + 5 + 'px';
+                break;
+            case 'ArrowLeft':
+                glass.style.left = parseInt(glass.style.left.substring(0, glass.style.left.length-2)) - 5 + 'px';
+                break;
+            case 'ArrowRight':
+                glass.style.left = parseInt(glass.style.left.substring(0, glass.style.left.length-2)) + 5 + 'px';
+                break;
+        }
+        // If the beer glass is in the coaster, show a message
+        if (glass.style.top === '200px' && glass.style.left === '450px'){
+            setTimeout(() => {
+                alert('Enjoy a nice cold beer!');
+            });
+        }
+    }
+}
+
+// Functions to turn on and off the beer mover
+function startBeerMove(){
+    console.log('listening for beer movement');
+    document.addEventListener('keydown', handleBeerMove);
+}
+
+function endBeerMove(){
+    console.log('No longer listening for beer movement');
+    document.removeEventListener('keydown', handleBeerMove);
 }
