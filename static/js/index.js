@@ -22,6 +22,13 @@ function pageLoader(){
     const findBrewsForm = document.querySelector('#find-brews-form');
     findBrewsForm.addEventListener('submit', (e) => findBreweries(e, 1));
 
+    // Add drag and drop for the beer and coaster
+    const droppable = document.getElementById('droppable');
+    droppable.addEventListener('dragover', allowDrop);
+    droppable.addEventListener('drop', drop);
+    const draggable = document.getElementById('draggable');
+    draggable.addEventListener('dragstart', drag);
+
 }
 
 // Create a function that will change the background color
@@ -112,7 +119,7 @@ function displayBreweries(data, pageNumber){
     }
 
     // Add a next button if there is data
-    if (data.length >= 0 && data.length == 10){
+    if (data.length == 10){
         let nextButton = document.createElement('button');
         nextButton.classList.add('prev-next-btn', 'btn', 'btn-primary');
         nextButton.innerText = 'Next';
@@ -145,4 +152,25 @@ function clearTable(table){
     for (let btn of buttonsToClear){
         btn.remove()
     }
+}
+
+
+// All drop events by stopping the default behavior for dragging
+function allowDrop(e){
+    // console.log('Allowing drop on:', e.target);
+    e.preventDefault()
+}
+
+// Set up drag to transfer the element's ID
+function drag(e){
+    console.log('Dragging beer...');
+    e.dataTransfer.setData('text', e.target.id);
+}
+
+function drop(e){
+    console.log('Dropping beer...');
+    const beerId = e.dataTransfer.getData('text');
+    console.log(beerId);
+    const draggable = document.getElementById(beerId);
+    e.target.append(draggable);
 }
